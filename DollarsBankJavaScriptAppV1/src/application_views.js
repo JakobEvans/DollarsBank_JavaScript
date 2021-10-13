@@ -1,13 +1,13 @@
 
 const colors = require('colors');
-const {displayCustomerInformation, displayCustomerCurrentBalance, updatePIN, allCustomers} = require("./customer_account");
-const {withdrawFunds, depositFunds, transferFunds, mostRecentTransactions} = require("./dollars_bank_atm");
+const {displayCustomerInformation, displayCustomerCurrentBalance, updatePIN, allCustomers, printTransactions, checkPIN} = require("./customer_account");
+const {withdrawFunds, depositFunds, transferFunds} = require("./dollars_bank_atm");
 
 const {printStringRed, printStringPurple, printStringBlue,printStringGreen, printTextBox} = require("./utility");
 
 function signIn() {
 
-    printStringBlue("\nPlease enter your Username and Password.")
+    printTextBox("Enter Login Details")
     const prompt = require('prompt-sync')();
     let password = '';
     let currentCustomer = '';
@@ -22,8 +22,13 @@ function signIn() {
         console.log('Password:');
         password = prompt('')
         if (currentCustomer.password == password) {
-            printStringGreen('Correct credentials!')
+
+            // console.log('PIN Number:');
+            // let pin = inputValidPin(currentCustomer);
             signedInView(currentCustomer);
+
+            printStringGreen('Correct credentials!')
+
         } else {
             printStringRed('Incorrect credentials!')
         }
@@ -57,6 +62,15 @@ function signedInView(customer){
                 displayCustomerCurrentBalance(customer);
 
                 depositFunds(customer);
+                // if(checkPIN(customer)){
+                //     displayCustomerCurrentBalance(customer);
+                //
+                //     depositFunds(customer);
+                // }
+                // else{
+                //     printStringRed('Incorrect Pin!')
+                // }
+
                 break;
             case '2':
 
@@ -75,7 +89,8 @@ function signedInView(customer){
             case '4':
 
                 printTextBox('5 Recent Transactions');
-                mostRecentTransactions(customer);
+                printTransactions(customer);
+
                 break;
             case '5':
                 printTextBox('Customer Information');

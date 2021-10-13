@@ -1,5 +1,7 @@
-const {printStringRed, printStringPurple, printStringBlue,printStringGreen, printTextBox, checkValidNumber, addNumbers,subtractNumbers} = require("./utility");
-const {displayCustomerCurrentBalance, allCustomers, updateMap, allTransactions} = require("./customer_account");
+const {printStringRed, printStringPurple, printStringBlue,printStringGreen, printTextBox, inputValidNumber, addNumbers,subtractNumbers,
+    getCurrentDateTime
+} = require("./utility");
+const {displayCustomerCurrentBalance, allCustomers, updateMap, allTransactions, addNewTransaction, printTransactions} = require("./customer_account");
 
 
 function depositFunds(customer){
@@ -7,7 +9,7 @@ function depositFunds(customer){
 
     console.log('\n'+ 'How much would you like to deposit?'.magenta.underline + '\n');
 
-    let depositAmount = checkValidNumber();
+    let depositAmount = inputValidNumber();
 
     let finalAmount = addNumbers(customer.savings.currentBalance, depositAmount)
     //change the balance
@@ -16,8 +18,15 @@ function depositFunds(customer){
     printStringGreen('Successfully deposited ' + depositAmount + ' into the account |' + customer.username + '|')
     updateMap(customer);
 
+    // let transactionText = 'Deposit of ' + depositAmount + ' into the account |' + customer.username + '|';
+    // transactionText = transactionText.concat('\nBalance - ' + customer.currentBalance + 'as on ' + getCurrentDateTime());
+    let transactionText = ('Deposit of ' + depositAmount + ' into the account |' + customer.username + '|'
+        + '\nBalance - ' + customer.savings.currentBalance + ' as on ' + getCurrentDateTime()).green;
+    addNewTransaction(customer, transactionText);
 
-    var transactions =[" apple","orange","pineapple"]
+
+
+
 
     // allTransactions.set(customer.username, )
 
@@ -26,7 +35,7 @@ function depositFunds(customer){
 function withdrawFunds(customer){
 
     printStringPurple('How much would you like to withdraw?');
-    let withdrawAmount = checkValidNumber();
+    let withdrawAmount = inputValidNumber();
     if(parseInt(withdrawAmount) > parseInt(customer.savings.currentBalance)){
         printStringRed('Insufficient funds');
     }
@@ -41,8 +50,10 @@ function withdrawFunds(customer){
 
 
     updateMap(customer);
-
-
+1
+    let transactionText = ('Withdraw of ' + withdrawAmount + ' from the account |' + customer.username + '|'
+        + '\nBalance - ' + customer.savings.currentBalance + ' as on ' + getCurrentDateTime()).red;
+    addNewTransaction(customer, transactionText);
 }
 
 function transferFunds(customer){
@@ -60,7 +71,7 @@ function transferFunds(customer){
     else if(allCustomers.has(otherUsername)){
         printStringGreen('Successfully found the user |' + otherUsername + '|')
         printStringPurple('How much would you like to transfer to ' +  otherUsername + '?');
-        let transferAmount = checkValidNumber();
+        let transferAmount = inputValidNumber();
 
         // check if withdraw is possible.
         if(parseInt(transferAmount) > parseInt(customer.savings.currentBalance)){
@@ -72,13 +83,24 @@ function transferFunds(customer){
             updateMap(customer);
 
             // make temp of other customer to update map
-            let tempCustomer = allCustomers.get(otherUsername);
+            let otherCustomer = allCustomers.get(otherUsername);
             // add the the transfer amount to other account
-            let otherCustomerBalance = addNumbers(tempCustomer.savings.currentBalance, transferAmount);
+            let otherCustomerBalance = addNumbers(otherCustomer.savings.currentBalance, transferAmount);
             //set temp to computed balance
-            tempCustomer.savings.currentBalance = otherCustomerBalance;
+            otherCustomer.savings.currentBalance = otherCustomerBalance;
             //update the map with new customer balance
-            updateMap(tempCustomer);
+            updateMap(otherCustomer);
+
+            //add transaction for giving end
+            let transactionText = ('Transfer of ' + transferAmount + ' from the account |' + customer.username +
+                '| to the account |' + otherUsername + '|'  + '\nBalance - ' + customer.savings.currentBalance + ' as on ' + getCurrentDateTime()).red;
+            addNewTransaction(customer, transactionText);
+
+            //add transaction for receiving end
+            let otherTransactionText = ('Received transfer of ' + transferAmount + ' from the account |' + customer.username +
+                '| to your account |' + otherUsername + '|'  + '\nBalance - ' + otherCustomer.savings.currentBalance + ' as on ' + getCurrentDateTime()).green;
+            addNewTransaction(otherCustomer, otherTransactionText)
+
             printStringGreen('Successfully transferred funds to user |' + otherUsername + '|')
         }
     }
@@ -90,8 +112,8 @@ function transferFunds(customer){
 }
 
 
-function mostRecentTransactions(customer){
-    console.log(allTransactions.get(customer.username));
-}
+// function mostRecentTransactions(customer){
+//     printTransactions(customer);
+// }
 
-module.exports = { withdrawFunds, depositFunds, transferFunds, mostRecentTransactions };
+module.exports = { withdrawFunds, depositFunds, transferFunds };

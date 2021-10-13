@@ -1,12 +1,32 @@
 
-const {printStringRed, printStringPurple,getCurrentDateTime, printStringBlue,printStringGreen, printTextBox, checkValidNumber,
-    checkValidPin
+const {printStringRed, printStringPurple,getCurrentDateTime, printStringBlue,printStringGreen, printTextBox, inputValidPassword, inputValidNumber,inputValidPhoneNumber,
+    inputValidPin
 } = require("./utility");
 
 
 let allCustomers = new Map();
 
 let allTransactions = new Map();
+
+
+function printTransactions(customer){
+
+    let currentCustomerTransactions = allTransactions.get(customer.username);
+    currentCustomerTransactions.forEach((value) => {
+        console.log(value + '\n');
+    });
+}
+
+function addNewTransaction(customer, transactionText){
+    let tempCustomerTransactions = allTransactions.get(customer.username);
+    // add new transaction
+    tempCustomerTransactions.push(transactionText);
+
+    // tempCustomerTransactions = tempCustomerTransactions.shift();
+
+
+    allTransactions.set(customer.username, tempCustomerTransactions);
+}
 
 
 function updateMap(customer){
@@ -50,24 +70,37 @@ function createNewAccount(){
     const name = prompt('Name: ');
 
     const address = prompt('Address: ');
-    const phoneNumber = prompt('Phone Number: ');
-    let username = prompt('Username: ');
 
+
+    // const phoneNumber = prompt('Phone Number: ');
+    console.log('Phone Number: ');
+
+    let phoneNumber = '';
+    phoneNumber = inputValidPhoneNumber();
+
+
+    let username = prompt('Username: ');
     while(allCustomers.has(username)){
-        console.log("This username exists, please select a different username")
+        printStringRed("This username exists, please select a different username")
         username = prompt('Username: ');
 
     }
 
-    const password = prompt('Password: ');
+    // const password = prompt('Password: ');
+    console.log('Password: ');
+    let password = '';
+    password = inputValidPassword();
 
-    console.log('Initial Deposit:')
-    let initialDeposit = checkValidNumber();
 
 
-    console.log('Pin Number: ')
+    console.log('Initial Deposit: ');
+    let initialDeposit = inputValidNumber();
+
+
+    console.log('Pin Number: ');
     let pin = '';
-    pin = checkValidPin();
+    pin = inputValidPin();
+
 
 
 
@@ -82,8 +115,8 @@ function createNewAccount(){
     customer.savings.currentBalance = initialDeposit;
 
     allCustomers.set(customer.username, customer);
-    allTransactions.set(customer.username, ['Initial Deposit of ' + initialDeposit + ' into the account |' + customer.username +
-    '|' + ' on '  + getCurrentDateTime()]);
+    allTransactions.set(customer.username, [('Initial Deposit of ' + initialDeposit + ' into the account |' + customer.username +
+    '|' + ' on '  + getCurrentDateTime()).green]);
 
 
 }
@@ -96,7 +129,9 @@ function createNewAccount(){
 //         alert("message");
 //         return false;
 //     }
+function checkValidPhoneNumber(){
 
+}
 function displayCustomerInformation(customer){
 
     Object.entries(customer).forEach(([key, value]) => {
@@ -117,11 +152,31 @@ function displayCustomerInformation(customer){
 }
 
 function updatePIN(customer){
+    printStringPurple('Please enter your OLD PIN');
+    let oldPin = checkValidPin();
 
-    printStringPurple('Please Enter your new pin');
-    let newPIN = checkValidPin();
-    customer.pin = newPIN;
-    printStringGreen('Successfully updated PIN')
+    if(customer.pin === oldPin){
+        printStringPurple('Please enter your NEW PIN');
+        let newPIN = checkValidPin();
+        customer.pin = newPIN;
+        printStringGreen('Successfully updated PIN!')
+    }
+
+
+}
+
+
+function checkPIN(customer, typeOfTransaction) {
+    printStringPurple('Please Enter your PIN to ' + typeOfTransaction + ': ')
+    let inputPin = checkValidPin();
+    if(customer.pin === inputPin) {
+        return true;
+
+    }
+    else{
+        return false;
+    }
+
 }
 
 function displayCustomerCurrentBalance(customer){
@@ -138,8 +193,33 @@ function displayCustomerCurrentBalance(customer){
 
 }
 
+function accountBalanceCheck(customer){
+    process.stdout.write("\n+".green);
+
+    for (let i = 0; i < str.length+2; i++){
+        process.stdout.write("*".green);
+
+    }
+    process.stdout.write("+".green);
+    console.log('');
+    process.stdout.write("| ".green);
+
+    process.stdout.write(('Current Balance: ' + customer.savings.currentBalance).green);
+
+    process.stdout.write(" |".green);
+    console.log();
+    process.stdout.write("+".green);
+
+    for (let i = 0; i < str.length+2; i++){
+        process.stdout.write("*".green);
+
+    }
+    process.stdout.write("+\n".green);
+
+}
 
 
 
 
-module.exports = { displayCustomerInformation, createNewAccount, displayCustomerCurrentBalance,updatePIN, allCustomers, updateMap, allTransactions };
+
+module.exports = {accountBalanceCheck, displayCustomerInformation, createNewAccount, displayCustomerCurrentBalance,updatePIN, checkPIN, allCustomers, inputValidNumber, addNewTransaction, updateMap, allTransactions, printTransactions };
