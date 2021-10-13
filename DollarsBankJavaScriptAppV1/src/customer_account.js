@@ -1,5 +1,18 @@
 
+const {printStringRed, printStringPurple,getCurrentDateTime, printStringBlue,printStringGreen, printTextBox, checkValidNumber,
+    checkValidPin
+} = require("./utility");
 
+
+let allCustomers = new Map();
+
+let allTransactions = new Map();
+
+
+function updateMap(customer){
+    allCustomers.set(customer.username, customer);
+
+}
 function newCustomer(){
 
 
@@ -16,22 +29,25 @@ function newCustomer(){
 
     customer.initialDeposit = '';
 
-    customer.currentBalance = '';
+    customer.pin = '';
 
+    let savingsBucket = new Object();
+    savingsBucket.currentBalance = '';
+    customer.savings = savingsBucket;
 
     return customer;
 }
 
 
 
-function createNewAccount(allCustomers){
+function createNewAccount(){
 
 
 
     let customer = newCustomer();
 
     const prompt = require('prompt-sync')();
-    const name = prompt('Name:');
+    const name = prompt('Name: ');
 
     const address = prompt('Address: ');
     const phoneNumber = prompt('Phone Number: ');
@@ -45,80 +61,85 @@ function createNewAccount(allCustomers){
 
     const password = prompt('Password: ');
 
-    const initialDeposit = prompt('Initial Deposit: ');
+    console.log('Initial Deposit:')
+    let initialDeposit = checkValidNumber();
+
+
+    console.log('Pin Number: ')
+    let pin = '';
+    pin = checkValidPin();
+
+
 
     customer.name = name;
     customer.address = address;
     customer.phone_number = phoneNumber;
     customer.username = username;
     customer.password = password;
-    customer.initialDeposit = initialDeposit;
-    customer.currentBalance = initialDeposit;
-    return customer
+    customer.pin = pin;
 
-    // const prompt = require('prompt-sync');
-    //
-    //
-    // const properties = [
-    //     {
-    //         name: 'name',
-    //         validator: /^[a-zA-Z\s\-]+$/,
-    //         warning: 'Username must be only letters, spaces, or dashes'
-    //     },
-    //     {
-    //         name: 'address',
-    //     },
-    //     {
-    //         name: 'phoneNumber',
-    //     },
-    //
-    //     {
-    //         name: 'initialDeposit',
-    //     },
-    //
-    //
-    //     {
-    //         name: 'username',
-    //         validator: /^[a-zA-Z\s\-]+$/,
-    //         warning: 'Username must be only letters, spaces, or dashes'
-    //     },
-    //     {
-    //         name: 'password',
-    //         hidden: true
-    //     }
-    //
-    //
-    //  ];
-    // prompt.start();
-    //
-    //
-    // prompt.get(properties, function (err, result) {
-    //     if (err) { return onErr(err); }
-    //     console.log('Account successfully created:');
-    //     console.log('  Name: ' + result.name);
-    //     console.log('  Address: ' + result.address);
-    //     console.log('  Phonenumber: ' + result.phone_number);
-    //     console.log('  InitialDeposit: ' + result.initialDeposit);
-    //     console.log('  Username: ' + result.username);
-    //     console.log('  Password: ' + result.password);
-    //     customer.name = result.name;
-    //     customer.address = result.address;
-    //     customer.phone_number = result.phone_number;
-    //     customer.initialDeposit = result.initialDeposit;
-    //     customer.username = result.username;
-    //     customer.password = result.password;
-    //     return customer;
-    //
-    // });
-    //
-    // function onErr(err) {
-    //     console.log(err);
-    //     return 1;
-    // }
+    customer.initialDeposit = initialDeposit;
+    customer.savings.currentBalance = initialDeposit;
+
+    allCustomers.set(customer.username, customer);
+    allTransactions.set(customer.username, ['Initial Deposit of ' + initialDeposit + ' into the account |' + customer.username +
+    '|' + ' on '  + getCurrentDateTime()]);
+
+
+}
+// function checkPhonenumber(input) {
+//     var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+//     if(inputtxt.value.match(phoneno)) {
+//         return true;
+//     }
+//     else {
+//         alert("message");
+//         return false;
+//     }
+
+function displayCustomerInformation(customer){
+
+    Object.entries(customer).forEach(([key, value]) => {
+        let temp = key.charAt(0).toUpperCase() + key.slice(1);
+
+        if(temp != 'Savings'){
+            console.log(temp + ': ' + value.toString());
+
+        }
+        else{
+            process.stdout.write(temp + ': ');
+
+        }
+    });
+
+    process.stdout.write(customer.savings.currentBalance.valueOf() + '\n\n');
 
 }
 
-// console.log(customer);
+function updatePIN(customer){
+
+    printStringPurple('Please Enter your new pin');
+    let newPIN = checkValidPin();
+    customer.pin = newPIN;
+    printStringGreen('Successfully updated PIN')
+}
+
+function displayCustomerCurrentBalance(customer){
+
+    let currentBalance = customer.savings.currentBalance;
+
+    if(parseInt(currentBalance) <= 10){
+        printStringRed('Balance Low: ' + currentBalance );
+
+    }
+    else {
+        printStringGreen('Balance: ' + currentBalance);
+    }
+
+}
 
 
-module.exports = { newCustomer, createNewAccount };
+
+
+
+module.exports = { displayCustomerInformation, createNewAccount, displayCustomerCurrentBalance,updatePIN, allCustomers, updateMap, allTransactions };

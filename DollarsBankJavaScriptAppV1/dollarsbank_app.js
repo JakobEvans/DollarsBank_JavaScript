@@ -6,7 +6,9 @@
 
 
 const {createNewAccount} = require("./src/customer_account");
-const {signedInView, mainMenuPrompt, signIn} = require("./src/application_views");
+
+const { mainMenuPrompt, signIn} = require("./src/application_views");
+const {printStringRed, printStringPurple, printStringBlue,printStringGreen, printTextBox} = require("./src/utility");
 
 // const readline = require('readline');
 //
@@ -29,10 +31,8 @@ const {signedInView, mainMenuPrompt, signIn} = require("./src/application_views"
 
     function startApplication() {
 
-
-        console.log("DOLLARSBANK ATM WELCOMES YOU!!");
+        printTextBox('DOLLARSBANK ATM WELCOMES YOU!!');
         console.log();
-        let allCustomers = new Map();
 
 
 
@@ -44,22 +44,21 @@ const {signedInView, mainMenuPrompt, signIn} = require("./src/application_views"
 
             switch (userChoice) {
                 case '1':
-                    console.log("INSIDE 1")
-                    let customer = createNewAccount(allCustomers);
+                    createNewAccount();
                     // console.log(customer);
-                    allCustomers.set(customer.username, customer);
 
                     break;
                 case '2':
 
-                    signIn(allCustomers);
+                    signIn();
 
                     break;
                 case '3':
+                    printStringRed('Exiting...')
                     isLoggedIn = false;
                     break;
                 case '4':
-                    console.log(allCustomers)
+                    console.log()
                 default:
                 // code block
             }
