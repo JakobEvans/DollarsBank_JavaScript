@@ -6,7 +6,7 @@
 
 
 const {createNewAccount} = require("./src/customer_account");
-const {signedInView} = require("./src/application_views");
+const {signedInView, mainMenuPrompt, signIn} = require("./src/application_views");
 
 // const readline = require('readline');
 //
@@ -32,40 +32,44 @@ const {signedInView} = require("./src/application_views");
 
         console.log("DOLLARSBANK ATM WELCOMES YOU!!");
         console.log();
+        let allCustomers = new Map();
 
 
-        const userChoice = mainMenuPrompt();
 
-        console.log(userChoice);
 
-        switch (userChoice) {
-            case '1':
-                console.log("INSIDE 1")
-                let customer = createNewAccount();
+        // console.log(userChoice);
+        var isLoggedIn = true;
+        do {
+            const userChoice = mainMenuPrompt();
 
-                console.log(customer);
-                signedInView(customer);
+            switch (userChoice) {
+                case '1':
+                    console.log("INSIDE 1")
+                    let customer = createNewAccount(allCustomers);
+                    // console.log(customer);
+                    allCustomers.set(customer.username, customer);
 
-                break;
-            case '2':
+                    break;
+                case '2':
+
+                    signIn(allCustomers);
+
+                    break;
+                case '3':
+                    isLoggedIn = false;
+                    break;
+                case '4':
+                    console.log(allCustomers)
+                default:
                 // code block
-                break;
-            case '3':
-                // code block
-                break;
-            default:
-            // code block
+            }
+
         }
+        while(isLoggedIn);
         // console.log("Enter a valid choice ( 1--> Transaction,  2 --> Open New account)")
 
     }
-        function mainMenuPrompt() {
-        const prompt = require('prompt-sync')();
-        const choice = prompt('What would you like to do?\n(1) Create New Account\n(2) Login\n(3) Exit\n')
 
-
-        return choice;
-        }
 
 
 
@@ -73,7 +77,7 @@ const {signedInView} = require("./src/application_views");
 startApplication();
 
 
-
+// @kenorb this is ES6 , use JSON.stringify([...map]);
 // //Create HTTP server and listen on port 3000 for requests
 // const server = http.createServer((req, res) => {
 //

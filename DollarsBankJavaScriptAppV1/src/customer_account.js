@@ -24,23 +24,28 @@ function newCustomer(){
 
 
 
-function createNewAccount(){
+function createNewAccount(allCustomers){
 
 
 
     let customer = newCustomer();
 
     const prompt = require('prompt-sync')();
-    const name = prompt('Name:\n');
+    const name = prompt('Name:');
 
-    const address = prompt('Address:\n');
-    const phoneNumber = prompt('Phone Number:\n');
-    const username = prompt('Username:\n');
+    const address = prompt('Address: ');
+    const phoneNumber = prompt('Phone Number: ');
+    let username = prompt('Username: ');
 
+    while(allCustomers.has(username)){
+        console.log("This username exists, please select a different username")
+        username = prompt('Username: ');
 
-    const password = prompt('Password:\n');
+    }
 
-    const initialDeposit = prompt('Initial Deposit:\n');
+    const password = prompt('Password: ');
+
+    const initialDeposit = prompt('Initial Deposit: ');
 
     customer.name = name;
     customer.address = address;
