@@ -7,7 +7,8 @@ const {displayCustomerCurrentBalance, allCustomers, updateMap, allTransactions, 
 function depositFunds(customer){
 
 
-    console.log('\n'+ 'How much would you like to deposit?'.magenta.underline + '\n');
+    console.log('\n'+ 'How much would you like to deposit?'.magenta.underline);
+    console.log('Accepted amounts are Bills & Personal Checks of any Amount\nDeposit funds: Format 00.00: ');
 
     let depositAmount = inputValidNumber();
 
@@ -97,7 +98,7 @@ function transferFunds(customer){
             addNewTransaction(customer, transactionText);
 
             //add transaction for receiving end
-            let otherTransactionText = ('Received transfer of ' + transferAmount + ' from the account |' + customer.username +
+            let otherTransactionText = ('Received Transfer of ' + transferAmount + ' from the account |' + customer.username +
                 '| to your account |' + otherUsername + '|'  + '\nBalance - ' + otherCustomer.savings.currentBalance + ' as on ' + getCurrentDateTime()).green;
             addNewTransaction(otherCustomer, otherTransactionText)
 
@@ -110,6 +111,13 @@ function transferFunds(customer){
         printStringRed('That user does not exist!')
     }
 }
+
+
+
+// function openNewAccount(customer){
+//
+//
+// }
 
 
 // function mostRecentTransactions(customer){

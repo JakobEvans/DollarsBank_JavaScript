@@ -153,14 +153,20 @@ function displayCustomerInformation(customer){
 
 function updatePIN(customer){
     printStringPurple('Please enter your OLD PIN');
-    let oldPin = checkValidPin();
+    let oldPin = inputValidPin();
 
     if(customer.pin === oldPin){
+        printStringGreen('Correct PIN!')
         printStringPurple('Please enter your NEW PIN');
-        let newPIN = checkValidPin();
+        let newPIN = inputValidPin();
         customer.pin = newPIN;
         printStringGreen('Successfully updated PIN!')
     }
+    else{
+        printStringRed('Incorrect PIN!')
+
+    }
+    updateMap(customer);
 
 
 }
@@ -184,16 +190,19 @@ function displayCustomerCurrentBalance(customer){
     let currentBalance = customer.savings.currentBalance;
 
     if(parseInt(currentBalance) <= 10){
-        printStringRed('Balance Low: ' + currentBalance );
+        printStringRed('Balance Low: $' + currentBalance );
 
     }
     else {
-        printStringGreen('Balance: ' + currentBalance);
+        printStringGreen('Balance: $' + currentBalance);
     }
 
 }
 
 function accountBalanceCheck(customer){
+
+    let str = ('Current Balance: $' + customer.savings.currentBalance);
+
     process.stdout.write("\n+".green);
 
     for (let i = 0; i < str.length+2; i++){
@@ -204,7 +213,7 @@ function accountBalanceCheck(customer){
     console.log('');
     process.stdout.write("| ".green);
 
-    process.stdout.write(('Current Balance: ' + customer.savings.currentBalance).green);
+    process.stdout.write(str.green);
 
     process.stdout.write(" |".green);
     console.log();
@@ -222,4 +231,4 @@ function accountBalanceCheck(customer){
 
 
 
-module.exports = {accountBalanceCheck, displayCustomerInformation, createNewAccount, displayCustomerCurrentBalance,updatePIN, checkPIN, allCustomers, inputValidNumber, addNewTransaction, updateMap, allTransactions, printTransactions };
+module.exports = {accountBalanceCheck, accountBalanceCheck, displayCustomerInformation, createNewAccount, displayCustomerCurrentBalance,updatePIN, checkPIN, allCustomers, inputValidNumber, addNewTransaction, updateMap, allTransactions, printTransactions };

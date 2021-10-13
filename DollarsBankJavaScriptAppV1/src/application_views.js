@@ -1,9 +1,9 @@
 
 const colors = require('colors');
-const {displayCustomerInformation, displayCustomerCurrentBalance, updatePIN, allCustomers, printTransactions, checkPIN} = require("./customer_account");
+const {displayCustomerInformation, displayCustomerCurrentBalance, updatePIN, allCustomers, printTransactions, checkPIN, accountBalanceCheck} = require("./customer_account");
 const {withdrawFunds, depositFunds, transferFunds} = require("./dollars_bank_atm");
 
-const {printStringRed, printStringPurple, printStringBlue,printStringGreen, printTextBox} = require("./utility");
+const {printStringRed, printStringPurple, printStringBlue,printStringGreen, printTextBox, inputValidPin} = require("./utility");
 
 function signIn() {
 
@@ -14,23 +14,32 @@ function signIn() {
     console.log('Username:');
     let username = prompt('')
     if (!allCustomers.has(username)) {
-        printStringRed("This username does not exist.")
+        printStringRed("The username " + username + " does not exist.")
     }
     else {
         currentCustomer = allCustomers.get(username);
 
         console.log('Password:');
         password = prompt('')
-        if (currentCustomer.password == password) {
+        if (currentCustomer.password === password) {
 
-            // console.log('PIN Number:');
-            // let pin = inputValidPin(currentCustomer);
-            signedInView(currentCustomer);
+            console.log('PIN Number:');
+            let inputPin = inputValidPin(currentCustomer);
+            if(inputPin === currentCustomer.pin){
+                printStringGreen('Correct credentials!')
 
-            printStringGreen('Correct credentials!')
+                signedInView(currentCustomer);
 
-        } else {
-            printStringRed('Incorrect credentials!')
+
+            }
+            else {
+                printStringRed('Incorrect PIN!')
+
+            }
+
+        }
+        else {
+            printStringRed('Incorrect password!')
         }
     }
 }
@@ -101,8 +110,12 @@ function signedInView(customer){
                 printTextBox('Update PIN');
                 updatePIN(customer);
                 break;
-
             case '7':
+
+                accountBalanceCheck(customer);
+                break;
+
+            case '8':
 
                 printStringRed('Logging out...')
                 isSignedIn =false;
@@ -150,7 +163,7 @@ function loggedInPrompt(customer) {
     const prompt = require('prompt-sync')();
 
     const signedInOptions = ["Deposit Amount:", "Withdraw Amount:", "Funds Transfer:",
-        "View 5 Recent Transactions", "Display Customer Information:", "Update PIN", "Sign Out" ];
+        "View 5 Recent Transactions", "Display Customer Information:", "Update PIN", "Account Balance Check", "Sign Out" ];
     let count = 1;
 
     printStringPurple('\nWhat would you like to do?'.underline)
