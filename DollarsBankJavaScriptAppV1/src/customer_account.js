@@ -97,7 +97,7 @@ function createNewAccount(){
     let initialDeposit = inputValidNumber();
 
 
-    console.log('Pin Number: ');
+    console.log('PIN Number: ');
     let pin = '';
     pin = inputValidPin();
 
